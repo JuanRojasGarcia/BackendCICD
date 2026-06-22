@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Obteniendo código de GitHub...'
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Compilando Spring Boot...'
+                // Usa el wrapper de Maven que viene con Spring Boot
+                sh './mvnw clean package -DskipTests'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Ejecutando pruebas unitarias...'
+                sh './mvnw test'
+            }
+        }
+    }
+}
