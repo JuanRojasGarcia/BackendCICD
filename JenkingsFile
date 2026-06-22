@@ -28,5 +28,16 @@ pipeline {
                 sh 'docker build -t mi-api-backend:latest .'
             }
         }
+        stage('Deploy Local') {
+            steps {
+                echo 'Desplegando la API localmente...'
+                // El comando '|| true' evita que el pipeline falle si es la primera vez y el contenedor no existe
+                sh '''
+                    docker stop mi-api-backend-container || true
+                    docker rm mi-api-backend-container || true
+                    docker run -d -p 8081:8080 --name mi-api-backend-container mi-api-backend:latest
+                '''
+            }
+        }
     }
 }
