@@ -1,0 +1,7 @@
+FROM jenkins/jenkins:lts
+# Cambiamos a usuario root para poder instalar paquetes
+USER root
+# Instalamos el cliente de Docker
+RUN apt-get update && apt-get install -y docker.io
+# Volvemos al usuario de Jenkins por seguridad
+USER jenkins

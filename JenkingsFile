@@ -21,5 +21,12 @@ pipeline {
                 sh './mvnw test'
             }
         }
+        stage('Docker Build') {
+            steps {
+                echo 'Construyendo la imagen Docker...'
+                // Gracias al túnel de Docker Desktop, esto se ejecutará en el motor de tu Mac
+                sh 'docker build -t mi-api-backend:latest .'
+            }
+        }
     }
 }
