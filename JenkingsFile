@@ -21,6 +21,18 @@ pipeline {
                 sh './mvnw test'
             }
         }
+        stage('SCA Security (OWASP)') {
+            steps {
+                echo 'Auditando librerías de terceros (pom.xml)...'
+                // El parámetro -DfailBuildOnCVSS=7.0 rompe el pipeline si encuentra vulnerabilidades ALTAS o CRÍTICAS.
+                // Usamos catchError para asegurar que el reporte HTML se genere y guarde aunque el escaneo falle.
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh './mvnw org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7.0'
+                }
+                // Jenkins tomará el reporte generado por Maven y lo pondrá en la interfaz gráfica
+                archiveArtifacts artifacts: 'target/dependency-check-report.html', allowEmptyArchive: true
+            }
+        }
         stage('SonarQube Analysis') {
             steps {
                 echo 'Auditando la calidad del código fuente...'
