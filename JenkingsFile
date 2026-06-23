@@ -31,8 +31,15 @@ pipeline {
         stage('Security Scan (Trivy)') {
             steps {
                 echo 'Buscando vulnerabilidades CRÍTICAS y ALTAS en la imagen...'
-                // Descarga Trivy, escanea tu API y muestra el reporte en la consola de Jenkins
-                sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL mi-api-backend:latest'            
+                // 1. Ejecutamos Trivy usando la plantilla HTML integrada y guardamos la salida en trivy-report.html
+                // Usamos 'catchError' para que el pipeline no se rompa de inmediato si hay vulnerabilidades,
+                // permitiendo que el reporte se guarde primero.
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --format template --template "@/contrib/html.tpl" --exit-code 1 --severity HIGH,CRITICAL mi-api-backend:latest > trivy-report.html'
+                }
+                
+                // 2. Le decimos a Jenkins que tome ese archivo y lo ponga disponible en la interfaz
+                archiveArtifacts artifacts: 'trivy-report.html', allowEmptyArchive: true
             }
         }
         stage('Deploy Local') {
