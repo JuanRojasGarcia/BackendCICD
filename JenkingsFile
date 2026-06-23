@@ -28,7 +28,8 @@ pipeline {
                 sh 'docker build -t mi-api-backend:latest .'
             }
         }
-        steps {
+        stage('Security Scan (Trivy)') {
+            steps {
                 echo 'Buscando vulnerabilidades CRÍTICAS y ALTAS en la imagen...'
                 // Descarga Trivy, escanea tu API y muestra el reporte en la consola de Jenkins
                 sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL mi-api-backend:latest'
