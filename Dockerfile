@@ -1,6 +1,7 @@
 # Usamos una imagen oficial y ligera de Java 17 (ajústala si usas Java 21)
 FROM eclipse-temurin:21-jdk-jammy
 
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 # Exponemos el puerto en el que corre Spring Boot por defecto
 EXPOSE 8080
 

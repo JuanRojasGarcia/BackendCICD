@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo 'Buscando vulnerabilidades CRÍTICAS y ALTAS en la imagen...'
                 // Descarga Trivy, escanea tu API y muestra el reporte en la consola de Jenkins
-                sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL mi-api-backend:latest'
+                sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 1 --severity HIGH,CRITICAL mi-api-backend:latest'            
             }
         }
         stage('Deploy Local') {
