@@ -21,6 +21,15 @@ pipeline {
                 sh './mvnw test'
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Auditando la calidad del código fuente...'
+                // Esta instrucción envuelve el comando y le inyecta la URL y el Token automáticamente
+                withSonarQubeEnv('SonarQube-Local') {
+                    sh './mvnw sonar:sonar'
+                }
+            }
+        }
         stage('Docker Build') {
             steps {
                 echo 'Construyendo la imagen Docker...'
